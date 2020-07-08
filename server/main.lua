@@ -67,7 +67,7 @@ end
 
 -- Version Checking - DON'T TOUCH THIS
 
-local CurrentVersion = '1.0.0'
+local CurrentVersion = '1.0.1'
 local GithubResourceName = 'Staff-Chat'
 
 PerformHttpRequest('https://raw.githubusercontent.com/Jougito/FiveM_Resources/master/' .. GithubResourceName .. '/VERSION', function(Error, NewestVersion, Header)
