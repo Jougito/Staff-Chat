@@ -1,19 +1,18 @@
--------------------------------------
--- Chat de Reports y Privado Staff --
---           por Jougito           --
--------------------------------------
+------------------------------
+-- Archivo de Configuración --
+------------------------------
 
 Config = {}
 
-Config.rCommand     = "report" -- Comando para los reportes
+Config.rCommand     = "soporte" -- Comando para los reportes
 Config.sCommand     = "rs" -- Comando para la radio del staff
 
-Config.rActive      = false -- Habilita el uso del comando report
+Config.rActive      = true -- Habilita el uso del comando report
 Config.sActive      = true -- Habilita el uso del comando para la radio del staff
 
 Label = {}
 
-Label.Report        = "Report" -- Título Reports
+Label.Report        = "Soporte" -- Título Reports
 Label.Staff         = "Staff" -- Título Staff
 
 Color = {}

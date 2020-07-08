@@ -31,7 +31,7 @@ if Config.sActive then
         if uGroup.group ~= 'user' then
             TriggerClientEvent("rs:Message", -1, uID, uName, args)
         else
-            TriggerClientEvent('chatMessage', uID, "[" .. Label.Staff   .. "]: ", Color.Staff, "No tienes permisos para hablar por este chat")
+           TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Staff .."]", "^7No tienes permisos para hablar por este chat" }, color = Color.Staff })
         end
 
     end, false)

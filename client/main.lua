@@ -31,9 +31,9 @@ AddEventHandler('rc:Message', function(uID, uName, args)
     local pId = GetPlayerFromServerId(uID)
     
     if pId == sId then
-        TriggerEvent('chatMessage', "", Color.Report, "^*[" .. Label.Report .. "] " .. uName .. "  (" .. uID .. "):^r^0  " .. args)
+        TriggerEvent('chat:addMessage', { args = { "[".. Label.Report .."] ".. uName .." (".. uID ..")", "^7".. args .."" }, color = Color.Report })
     elseif group ~= 'user' and pId ~= sId then
-        TriggerEvent('chatMessage', "", Color.Report, "^*[" .. Label.Report .. "] " .. uName .. "  (" .. uID .. "):^r^0  " .. args)
+        TriggerEvent('chat:addMessage', { args = { "[".. Label.Report .."] ".. uName .." (".. uID ..")", "^7".. args .."" }, color = Color.Report })
     end
 
 end)
@@ -47,9 +47,9 @@ AddEventHandler('rs:Message', function(uID, uName, args)
     local pId = GetPlayerFromServerId(uID)
     
     if pId == sId then
-        TriggerEvent('chatMessage', "", Color.Staff, "^*[" .. Label.Staff   .. "] " .. uName .. "  (" .. uID .. "):^r^0  " .. args)
+        TriggerEvent('chat:addMessage', { args = { "[".. Label.Staff .."] ".. uName .." (".. uID ..")", "^7".. args .."" }, color = Color.Staff })
     elseif group ~= 'user' and pId ~= sId then
-        TriggerEvent('chatMessage', "", Color.Staff, "^*[" .. Label.Staff   .. "] " .. uName .. "  (" .. uID .. "):^r^0  " .. args)
+        TriggerEvent('chat:addMessage', { args = { "[".. Label.Staff .."] ".. uName .." (".. uID ..")", "^7".. args .."" }, color = Color.Staff })
     end
 
 end)
