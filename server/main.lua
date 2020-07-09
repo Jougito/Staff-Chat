@@ -67,28 +67,28 @@ end
 
 -- Version Checking - DON'T TOUCH THIS
 
-local CurrentVersion = '1.0.1'
+local CurrentVersion = '1.0.2'
 local GithubResourceName = 'Staff-Chat'
 
 PerformHttpRequest('https://raw.githubusercontent.com/Jougito/FiveM_Resources/master/' .. GithubResourceName .. '/VERSION', function(Error, NewestVersion, Header)
     PerformHttpRequest('https://raw.githubusercontent.com/Jougito/FiveM_Resources/master/' .. GithubResourceName .. '/CHANGELOG', function(Error, Changes, Header)
-        print('\n')
-        print('[Staff Chat] Checking for updates...')
-        print('')
-        print('[Staff Chat] Current version: ' .. CurrentVersion)
-        print('[Staff Chat] Updater version: ' .. NewestVersion)
-        print('')
+        print('^0')
+        print('^6[Staff Chat]^0 Checking for updates...')
+        print('^0')
+        print('^6[Staff Chat]^0 Current version: ^5' .. CurrentVersion .. '^0')
+        print('^6[Staff Chat]^0 Updater version: ^5' .. NewestVersion .. '^0')
+        print('^0')
         if CurrentVersion ~= NewestVersion then
-            print('[Staff Chat] Your script is outdated!')
-            print('')
-            print('[Staff Chat] CHANGELOG ' .. NewestVersion .. ':')
-            print('')
+            print('^6[Staff Chat]^0 Your script is ^8outdated^0!')
+            print('^0')
+            print('^6[Staff Chat] ^3CHANGELOG ^5' .. NewestVersion .. ':^0')
+            print('^3')
             print(Changes)
-            print('')
-            print('[Staff Chat] You are not running the newest stable version of Staff Chat. Please update: https://github.com/Jougito/Staff-Chat')
+            print('^0')
+            print('^6[Staff Chat]^0 You ^8are not^0 running the newest stable version of ^5Staff Chat^0. Please update: https://github.com/Jougito/Staff-Chat')
         else
-            print('[Staff Chat] Your script is up-to-update')
+            print('^6[Staff Chat]^0 Your script is ^2up-to-update^0')
         end
-        print('\n')
+        print('^0')
     end)
 end)
