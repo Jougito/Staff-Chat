@@ -17,5 +17,5 @@ Label.Staff         = "Staff" -- Título Staff
 
 Color = {}
 
-Color.Report        = { 175, 0, 50 } -- Color Reports (Rojo Oscuro)
+Color.Report        = { 200, 50, 50 } -- Color Reports (Rojo Oscuro)
 Color.Staff         = { 200, 0, 255 } -- Color Staff (Morado)
