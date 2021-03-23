@@ -3,6 +3,13 @@
 --           por Jougito           --
 -------------------------------------
 
+local nTicket = 0
+local Tickets = {}
+
+TriggerEvent('esx:getSharedObject', function(obj)
+    ESX = obj
+end)
+
 if Config.rActive then
 
     RegisterCommand(Config.rCommand, function(source, args, rawCommand)
@@ -12,7 +19,136 @@ if Config.rActive then
         local uID = source
         local uName = GetPlayerName(uID)
 
-        TriggerClientEvent("rc:Message", -1, uID, uName, args)
+        if args ~= "" then
+            nTicket = nTicket + 1
+            Tickets['tck' .. nTicket] = {id = nTicket, name = uName, assigned = 0, aName = nil, closed = 0, cName = nil}
+            TriggerClientEvent('rc:Message', -1, uID, uName, args, nTicket)
+        end
+
+    end, false)
+
+    RegisterCommand(Config.inCommand, function(source, args, rawCommand)
+
+        args = table.concat(args, ' ')
+
+        local uID = source
+        local xPlayer = ESX.GetPlayerFromId(uID)
+        local uGroup = xPlayer.getGroup()
+
+        if args ~= "" then
+            if uGroup ~= 'user' and uGroup ~= nil then
+                if Tickets['tck' .. args] then
+                    if Tickets['tck' .. args].assigned == 0 and Tickets['tck' .. args].aName == nil then
+                        if Tickets['tck' .. args].closed == 0 and Tickets['tck' .. args].cName == nil then
+                            TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7Ticket ^2" .. args .. " ^7enviado por ^2" .. Tickets['tck' .. args].name .. " ^7está sin asignar y sin cerrar"}, color = Color.Report })
+                        elseif Tickets['tck' .. args].closed == 1 and Tickets['tck' .. args].cName ~= nil then
+                            TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7Ticket ^2" .. args .. " ^7enviado por ^2" .. Tickets['tck' .. args].name .. " ^7está sin asignar y cerrado por ^2 " .. Tickets['tck' .. args].cName}, color = Color.Report })
+                        else
+                            TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7No se ha podido obtener la información del ticket" }, color = Color.Report })
+                        end
+                    elseif Tickets['tck' .. args].assigned == 1 and Tickets['tck' .. args].aName ~= nil then
+                        if Tickets['tck' .. args].closed == 0 and Tickets['tck' .. args].cName == nil then
+                            TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7Ticket ^2" .. args .. " ^7enviado por ^2" .. Tickets['tck' .. args].name .. " ^7está asignado a ^2" .. Tickets['tck' .. args].aName .. " ^7y sin cerrar"}, color = Color.Report })
+                        elseif Tickets['tck' .. args].closed == 1 and Tickets['tck' .. args].cName ~= nil then
+                            TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7Ticket ^2" .. args .. " ^7enviado por ^2" .. Tickets['tck' .. args].name .. " ^7está asignado a ^2" .. Tickets['tck' .. args].aName .. " ^7y cerrado por ^2" .. Tickets['tck' .. args].cName}, color = Color.Report })
+                        else
+                            TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7No se ha podido obtener la información del ticket" }, color = Color.Report })
+                        end
+                    else
+                        TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7No se ha podido obtener la información del ticket" }, color = Color.Report })
+                    end
+                else
+                    TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7No se ha encontrado el ticket" }, color = Color.Report })
+                end
+            else
+                TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7No tienes permisos para usar este comando" }, color = Color.Report })
+            end
+        end
+
+    end, false)
+
+    RegisterCommand(Config.acCommand, function(source, args, rawCommand)
+
+        args = table.concat(args, ' ')
+
+        local uID = source
+        local xPlayer = ESX.GetPlayerFromId(uID)
+        local uName = GetPlayerName(uID)
+        local uGroup = xPlayer.getGroup()
+
+        if args ~= "" then
+            if uGroup ~= 'user' and uGroup ~= nil then
+                if Tickets['tck' .. args] then
+                    if Tickets['tck' .. args].assigned == 0 and Tickets['tck' .. args].aName == nil then
+                        Tickets['tck' .. args].assigned = 1
+                        Tickets['tck' .. args].aName = uName
+                        iText = { "[".. Label.Report .."]", "^7Ticket ^2" .. args .. " ^7asignado a ^2" .. uName}
+                        TriggerClientEvent('rc:Ticket', -1, uID, iText)
+                    else
+                        TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7Ese ticket ya ha sido asignado a ^2" .. Tickets['tck' .. args].aName}, color = Color.Report })
+                    end
+                else
+                    TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7No se ha encontrado el ticket" }, color = Color.Report })
+                end
+            else
+                TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7No tienes permisos para usar este comando" }, color = Color.Report })
+            end
+        end
+
+    end, false)
+
+    RegisterCommand(Config.dnCommand, function(source, args, rawCommand)
+
+        args = table.concat(args, ' ')
+
+        local uID = source
+        local xPlayer = ESX.GetPlayerFromId(uID)
+        local uGroup = xPlayer.getGroup()
+
+        if args ~= "" then
+            if uGroup ~= 'user' and uGroup ~= nil then
+                if Tickets['tck' .. args] then
+                    if Tickets['tck' .. args].assigned == 1 and Tickets['tck' .. args].aName ~= nil then
+                        Tickets['tck' .. args].assigned = 0
+                        Tickets['tck' .. args].aName = nil
+                        iText = { "[".. Label.Report .."]", "^7Ticket ^2" .. args .. " ^7ya no está asignado a nadie"}
+                        TriggerClientEvent('rc:Ticket', -1, uID, iText)
+                    else
+                        TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7Ese ticket no está asignado a nadie"}, color = Color.Report })
+                    end
+                else
+                    TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7No se ha encontrado el ticket" }, color = Color.Report })
+                end
+            else
+                TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7No tienes permisos para usar este comando" }, color = Color.Report })
+            end
+        end
+
+    end, false)
+
+    RegisterCommand(Config.dlCommand, function(source, args, rawCommand)
+
+        args = table.concat(args, ' ')
+
+        local uID = source
+        local xPlayer = ESX.GetPlayerFromId(uID)
+        local uName = GetPlayerName(uID)
+        local uGroup = xPlayer.getGroup()
+
+        if args ~= "" then
+            if uGroup ~= 'user' and uGroup ~= nil then
+                if Tickets['tck' .. args] then
+                    Tickets['tck' .. args].closed = 1
+                    Tickets['tck' .. args].cName = uName
+                    iText = { "[".. Label.Report .."]", "^7Ticket ^2" .. args .. " ^7ha sido cerrado por ^2" .. uName}
+                    TriggerClientEvent('rc:Ticket', -1, uID, iText)
+                else
+                    TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7No se ha encontrado el ticket" }, color = Color.Report })
+                end
+            else
+                TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Report .."]", "^7No tienes permisos para usar este comando" }, color = Color.Report })
+            end
+        end
 
     end, false)
 
@@ -25,49 +161,33 @@ if Config.sActive then
         args = table.concat(args, ' ')
 
         local uID = source
+        local xPlayer = ESX.GetPlayerFromId(uID)
         local uName = GetPlayerName(uID)
-        local uGroup = GetIdentity(uID)
+        local uGroup = xPlayer.getGroup()
 
-        if uGroup.group ~= 'user' then
-            TriggerClientEvent("rs:Message", -1, uID, uName, args)
-        else
-           TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Staff .."]", "^7No tienes permisos para hablar por este chat" }, color = Color.Staff })
+        if args ~= "" then
+            if uGroup ~= 'user' and uGroup ~= nil then
+                TriggerClientEvent('rs:Message', -1, uID, uName, args)
+            else
+                TriggerClientEvent('chat:addMessage', uID, { args = { "[".. Label.Staff .."]", "^7No tienes permisos para hablar por este chat" }, color = Color.Staff })
+            end
         end
 
     end, false)
 
 end
 
--- Funciones
+RegisterServerEvent('StaffChat:sGroup')
+AddEventHandler('StaffChat:sGroup', function(uID)
+    local xPlayer = ESX.GetPlayerFromId(uID)
+    local uGroup = xPlayer.getGroup()
 
-function GetIdentity(source)
-
-    local identifier = GetPlayerIdentifiers(source)[1]
-    local result = MySQL.Sync.fetchAll("SELECT * FROM users WHERE identifier = @identifier", {['@identifier'] = identifier})
-    
-    if result[1] ~= nil then
-    
-        local identity = result[1]
-
-        return {
-            identifier = identity['identifier'],
-            name = identity['name'],
-            firstname = identity['firstname'],
-            lastname = identity['lastname'],
-            dateofbirth = identity['dateofbirth'],
-            sex = identity['sex'],
-            height = identity['height'],
-            job = identity['job'],
-            group = identity['group']
-        }
-    else
-        return nil
-    end
-end
+    TriggerClientEvent('StaffChat:uGroup', uID, uGroup)
+end)
 
 -- Version Checking - DON'T TOUCH THIS
 
-local CurrentVersion = '1.0.2'
+local CurrentVersion = '1.0.4'
 local GithubResourceName = 'Staff-Chat'
 
 PerformHttpRequest('https://raw.githubusercontent.com/Jougito/FiveM_Resources/master/' .. GithubResourceName .. '/VERSION', function(Error, NewestVersion, Header)

@@ -3,37 +3,72 @@
 --           por Jougito           --
 -------------------------------------
 
-Citizen.CreateThread(function()
-    TriggerEvent('chat:addSuggestion', '/' .. Config.rCommand,  'Manda un reporte al staff', { { name = 'Mensaje', help = 'Mensaje de explicación detallado del reporte' } })
-    TriggerEvent('chat:addSuggestion', '/' .. Config.sCommand,  'Manda un mensaje en el chat de staff', { { name = 'Mensaje', help = 'Mensaje que quieres enviar al chat de staff (Solo uso para Staff)' } })
-end)
-
 local group = 'user'
 
-RegisterNetEvent('es_admin:setGroup')
-AddEventHandler('es_admin:setGroup', function(g)
-    print('Grupo establecido: ' .. g)
-    group = g
+Citizen.CreateThread(function()
+    if Config.rActive then
+        TriggerEvent('chat:addSuggestion', '/' .. Config.rCommand,  'Manda un reporte al staff', { { name = 'Mensaje', help = 'Mensaje de explicación detallado del reporte' } })
+        TriggerEvent('chat:addSuggestion', '/' .. Config.inCommand,  'Muestra la información de un ticket', { { name = 'ID', help = 'ID del ticket' } })
+        TriggerEvent('chat:addSuggestion', '/' .. Config.acCommand,  'Asigna un ticket a un staff', { { name = 'ID', help = 'ID del ticket' } })
+        TriggerEvent('chat:addSuggestion', '/' .. Config.dnCommand,  'Quita la asignación de un ticket', { { name = 'ID', help = 'ID del ticket' } })
+        TriggerEvent('chat:addSuggestion', '/' .. Config.dlCommand,  'Cierra un ticket', { { name = 'ID', help = 'ID del ticket' } })
+    end
+
+    if Config.sActive then
+        TriggerEvent('chat:addSuggestion', '/' .. Config.sCommand,  'Manda un mensaje en el chat de staff', { { name = 'Mensaje', help = 'Mensaje que quieres enviar al chat de staff (Solo uso para Staff)' } })
+    end
 end)
 
-RegisterNetEvent("kc_admin:get_group")
-AddEventHandler("kc_admin:get_group", function (server_group)
-    print('Grupo establecido: ' .. server_group)
-    group = server_group
+Citizen.CreateThread(function()
+    while ESX == nil do
+        TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+        Citizen.Wait(0)
+    end
+end)
+
+-- Refresh group
+
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(0)
+        local pId = GetPlayerServerId(PlayerId())
+
+        TriggerServerEvent('StaffChat:sGroup', pId)
+        Citizen.Wait(60 * 1000)
+	end
+end)
+
+RegisterNetEvent('StaffChat:uGroup')
+AddEventHandler('StaffChat:uGroup', function(uGroup)
+    group = uGroup
 end)
 
 -- Reportes
 
 RegisterNetEvent('rc:Message')
-AddEventHandler('rc:Message', function(uID, uName, args)
+AddEventHandler('rc:Message', function(uID, uName, args, tId)
 
     local sId = PlayerId()
     local pId = GetPlayerFromServerId(uID)
     
     if pId == sId then
-        TriggerEvent('chat:addMessage', { args = { "[".. Label.Report .."] ".. uName .." (".. uID ..")", "^7".. args .."" }, color = Color.Report })
+        TriggerEvent('chat:addMessage', { args = { "[".. Label.Report .." - " .. tId .. "] ".. uName .." (".. uID ..")", "^7".. args .."" }, color = Color.Report })
     elseif group ~= 'user' and pId ~= sId then
-        TriggerEvent('chat:addMessage', { args = { "[".. Label.Report .."] ".. uName .." (".. uID ..")", "^7".. args .."" }, color = Color.Report })
+        TriggerEvent('chat:addMessage', { args = { "[".. Label.Report .." - " .. tId .. "] ".. uName .." (".. uID ..")", "^7".. args .."" }, color = Color.Report })
+    end
+
+end)
+
+RegisterNetEvent('rc:Ticket')
+AddEventHandler('rc:Ticket', function(uID, iText)
+
+    local sId = PlayerId()
+    local pId = GetPlayerFromServerId(uID)
+    
+    if pId == sId then
+        TriggerEvent('chat:addMessage', { args = iText, color = Color.Report })
+    elseif group ~= 'user' and pId ~= sId then
+        TriggerEvent('chat:addMessage', { args = iText, color = Color.Report })
     end
 
 end)

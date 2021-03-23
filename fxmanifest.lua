@@ -6,7 +6,7 @@ author 'Jougito'
 
 description 'Chat de reportes y radio staff ingame'
 
-version '1.0.1'
+version '1.0.4'
 
 client_scripts {
     'config.lua',
@@ -14,7 +14,6 @@ client_scripts {
 }
 
 server_scripts {
-    '@mysql-async/lib/MySQL.lua',
     'config.lua',
     'server/main.lua'
 }
